@@ -1,12 +1,11 @@
-var Helpers = {
-    cloneObject: function(o) {
-       var pds = {};
-        Object.getOwnPropertyNames(o).forEach(function _eachName(name) {
-            pds[name] = Object.getOwnPropertyDescriptor(o, name);
-        });
-
-        return Object.create(Object.getPrototypeOf(o), pds);
+export class TapeMachine{
+    constructor(){
+        this.recordedMessage = '';
     }
-};
-
-module.exports = Helpers;
+    record(message){
+        this.recordedMessage = message;
+    }
+    play(){
+        console.log(this.recordedMessage);
+    }
+}

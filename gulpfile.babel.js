@@ -1,6 +1,6 @@
 'use strict';
 
-var paths = {
+const paths = {
     input: 'src',
     output: 'build',
     images: {
@@ -22,53 +22,53 @@ var paths = {
         output: 'build/js'
     },
     templates: {
-        input: ['src/*', '!src/css/', '!src/styles/js'],
+        input: ['src/*', '!src/css/', '!src/js'],
         output: 'build'
     }
 };
 
-var gulp = require('gulp');
-var gutil = require('gulp-util');
-var del = require('del');
-var uglify = require('gulp-uglify');
-var gulpif = require('gulp-if');
-var exec = require('child_process').exec;
+import gulp from 'gulp';
+import gutil from 'gulp-util';
+import del from 'del';
+import uglify from 'gulp-uglify';
+import gulpif from 'gulp-if';
+import { exec } from 'child_process';
 
-var notify = require('gulp-notify');
+import notify from 'gulp-notify';
+import buffer from 'vinyl-buffer';
+import { argv } from 'yargs';
 
-var buffer = require('vinyl-buffer');
-var argv = require('yargs').argv;
 // sass
-var sass = require('gulp-sass');
-var postcss = require('gulp-postcss');
-var autoprefixer = require('autoprefixer');
-var sourcemaps = require('gulp-sourcemaps');
+import sass from 'gulp-sass';
+import postcss from 'gulp-postcss';
+import autoprefixer from 'autoprefixer';
+import sourcemaps from 'gulp-sourcemaps';
+
 // BrowserSync
-var browserSync = require('browser-sync');
+import browserSync from 'browser-sync';
+
 // js
-var browserify = require('browserify');
-var source = require('vinyl-source-stream');
-// image optimization
-var imagemin = require('gulp-imagemin');
+import browserify from 'browserify';
+import babelify from 'babelify';
+import source from 'vinyl-source-stream';
+
 // linting
-var jshint = require('gulp-jshint');
-var stylish = require('jshint-stylish');
-// testing/mocha
-var mocha = require('gulp-mocha');
+import jshint from 'gulp-jshint';
+import stylish from 'jshint-stylish';
 
 // gulp build --production
-var production = !!argv.production;
+const production = !!argv.production;
 // determine if we're doing a build
 // and if so, bypass the livereload
-var build = argv._.length ? argv._[0] === 'build' : false;
-var watch = argv._.length ? argv._[0] === 'watch' : true;
+const build = argv._.length ? argv._[0] === 'build' : false;
+const watch = argv._.length ? argv._[0] === 'watch' : true;
 
-var port = process.env.PORT || 8000;
+const port = process.env.PORT || 8000;
 
 // ----------------------------
 // Error notification methods
 // ----------------------------
-var beep = function() {
+function beep() {
     var os = require('os');
     var file = 'gulp/error.wav';
     if (os.platform() === 'linux') {
@@ -81,7 +81,7 @@ var beep = function() {
     }
 };
 
-var handleError = function (task, err) {
+function handleError(task, err) {
     gutil.beep();
 
     notify.onError({
@@ -95,17 +95,17 @@ var handleError = function (task, err) {
 // --------------------------
 // CUSTOM TASK METHODS
 // --------------------------
-var tasks = {
+const tasks = {
     // --------------------------
     // Delete build folder
     // --------------------------
-    clean: function() {
+    clean() {
         return del(paths.output);
     },
     // --------------------------
     // Copy static assets
     // --------------------------
-    assets: function() {
+    assets() {
         gulp.src(paths.images.input)
             .pipe(gulp.dest(paths.images.output))
         gulp.src(paths.fonts.input)
@@ -115,14 +115,14 @@ var tasks = {
     // HTML
     // --------------------------
     // html templates (when using the connect server)
-    templates: function() {
+    templates() {
         return gulp.src(paths.templates.input)
             .pipe(gulp.dest(paths.templates.output))
     },
     // --------------------------
     // SASS (libsass)
     // --------------------------
-    sass: function() {
+    sass() {
        return gulp.src(paths.styles.main_input)
             // sourcemaps + sass + error handling
             .pipe(gulpif(!production, sourcemaps.init()))
@@ -156,90 +156,42 @@ var tasks = {
             .pipe(gulp.dest(paths.styles.output));
     },
 
-    browserifyOutdatedBrowser: function() {
-        var bundler = browserify('./src/js/oldbrowser.js', {
-            debug: !production
-        });
-        var bundle = function() {
-            return bundler.bundle()
-                .on('error', function(err) {
-                    handleError('Browserify', err);
-                    this.emit('end');
-                })
-                .pipe(source('oldbrowser.js'))
-                .pipe(gulpif(production, buffer()))
-                .pipe(gulpif(production, uglify()))
-                .pipe(gulp.dest(paths.scripts.output));
-        };
-        return bundle();
+    // --------------------------
+    // JS
+    // --------------------------
+    js() {
+        return browserify({ entries: paths.scripts.bundler_input, debug: !production})
+            .transform('babelify', { 
+                presets: ['es2015'],
+                plugins: ["transform-object-assign"]
+            })
+            .bundle()
+            .on('error', function(err) {
+                handleError('Browserify', err);
+                this.emit('end');
+            })
+            .pipe(source('build.js'))
+            .pipe(gulpif(production, buffer()))
+            .pipe(gulpif(production, uglify()))
+            .pipe(gulp.dest(paths.scripts.output));
     },
-    // --------------------------
-    // Browserify
-    // --------------------------
-    browserify: function() {
-        var bundler = browserify(paths.scripts.bundler_input, {
-            debug: !production,
-            cache: {}
-        });
 
-        var rebundle = function() {
-            return bundler.bundle()
-                .on('error', function(err) {
-                    handleError('Browserify', err);
-                    this.emit('end');
-                })
-                .pipe(source('build.js'))
-                .pipe(gulpif(production, buffer()))
-                .pipe(gulpif(production, uglify()))
-                .pipe(gulp.dest(paths.scripts.output));
-        };
-        bundler.on('update', rebundle);
-        return rebundle();
-    },
     // --------------------------
     // linting
     // --------------------------
-    lintjs: function() {
+    lintjs() {
         return gulp.src([
                 paths.scripts.input
-            ]).pipe(jshint())
+            ])
+            .pipe(jshint())
             .pipe(jshint.reporter(stylish))
-            .on('error', function() {
+            .on('error', () => {
                 beep();
             });
     },
-    // --------------------------
-    // Optimize asset images
-    // --------------------------
-    optimize: function() {
-        return gulp.src(paths.images.input)
-            .pipe(imagemin({
-                progressive: true,
-                svgoPlugins: [{
-                    removeViewBox: false
-                }],
-                // png optimization
-                optimizationLevel: production ? 3 : 1
-            }))
-            .pipe(gulp.dest(paths.images.output));
-    },
-    // --------------------------
-    // Testing with mocha
-    // --------------------------
-    test: function() {
-        return gulp.src('./src/**/*test.js', {
-                read: false
-            })
-            .pipe(mocha({
-                'ui': 'bdd',
-                'reporter': 'spec'
-            }));
-    },
-
-
 };
 
-gulp.task('browser-sync', function() {
+gulp.task('browser-sync', () => {
     browserSync({
         files: paths.output + '/**/*',
         server: {
@@ -248,13 +200,13 @@ gulp.task('browser-sync', function() {
     });
 });
 
-gulp.task('reload-sass', ['sass'], function() {
+gulp.task('reload-sass', ['sass'], () => {
     browserSync.reload();
 });
-gulp.task('reload-js', ['browserify'], function() {
+gulp.task('reload-js', ['js'], () => {
     browserSync.reload();
 });
-gulp.task('reload-templates', ['templates'], function() {
+gulp.task('reload-templates', ['templates'], () => {
     browserSync.reload();
 });
 
@@ -263,21 +215,18 @@ gulp.task('reload-templates', ['templates'], function() {
 // --------------------------
 gulp.task('clean', tasks.clean);
 // for production we require the clean method on every individual task
-var req = build ? ['clean'] : [];
+const req = build ? ['clean'] : [];
 // individual tasks
 gulp.task('templates', req, tasks.templates);
 gulp.task('assets', req, tasks.assets);
 gulp.task('sass', req, tasks.sass);
-gulp.task('browserify', req, tasks.browserify);
+gulp.task('js', req, tasks.js);
 gulp.task('lint:js', tasks.lintjs);
-gulp.task('optimize', tasks.optimize);
-gulp.task('test', tasks.test);
-gulp.task('browserifyOutdatedBrowser', req, tasks.browserifyOutdatedBrowser);
 
 // --------------------------
 // DEV/WATCH TASK
 // --------------------------
-gulp.task('watch', ['assets', 'templates', 'sass', 'browserify', 'browser-sync', 'browserifyOutdatedBrowser'], function() {
+gulp.task('watch', ['assets', 'templates', 'sass', 'js', 'browser-sync'], () => {
 
     // --------------------------
     // watch:sass
@@ -308,8 +257,7 @@ gulp.task('build', [
     'templates',
     'assets',
     'sass',
-    'browserify',
-    'browserifyOutdatedBrowser'
+    'js',
 ]);
 
 gulp.task('default', ['watch']);

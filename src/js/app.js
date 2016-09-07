@@ -1,11 +1,5 @@
-'use strict';
+import { TapeMachine } from 'modules/helpers';
 
-var helpers = require('modules/helpers');
-
-var app = {
-    init: function() {
-        console.log(helpers);
-    }
-};
-
-app.init();
+const tp = new TapeMachine();
+tp.record('Hello... Hellooooo!!! Helloooooo!!!!!');
+tp.play();
