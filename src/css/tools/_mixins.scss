@@ -1,0 +1,51 @@
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+/* Set horizontal padding using global gutter variables, pass divider as parameter (default is 1) */
+@mixin horizontal-default-gutter($divider: 1) {
+
+    padding-left: $base-gutter / $divider;
+    padding-right: $base-gutter / $divider;
+
+    @include breakpoint(medium) {
+        padding-left: $base-gutter-md / $divider;
+        padding-right: $base-gutter-md / $divider;
+    }
+
+    @include breakpoint(small) {
+        padding-left: $base-gutter-sm / $divider;
+        padding-right: $base-gutter-sm / $divider;
+    }
+
+    @include breakpoint(xsmall) {
+        padding-left: $base-gutter-xs / $divider;
+        padding-right: $base-gutter-xs / $divider;
+    }
+}
+
+/* Set vertical padding using global gutter variables, pass divider as parameter (default is 1) */
+@mixin vertical-default-gutter($divider: 1) {
+
+    padding-top: $base-gutter / $divider;
+    padding-bottom: $base-gutter / $divider;
+
+    @include breakpoint(medium) {
+        padding-top: $base-gutter-md / $divider;
+        padding-bottom: $base-gutter-md / $divider;
+    }
+
+    @include breakpoint(small) {
+        padding-top: $base-gutter-sm / $divider;
+        padding-bottom: $base-gutter-sm / $divider;
+    }
+
+    @include breakpoint(xsmall) {
+        padding-top: $base-gutter-xs / $divider;
+        padding-bottom: $base-gutter-xs / $divider;
+    }
+}

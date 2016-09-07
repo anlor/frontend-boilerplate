@@ -1,0 +1,53 @@
+{
+  "name": "boilerplate-gulp-browserify",
+  "version": "0.0.1",
+  "description": "Boilerplate using Gulp and Browserify",
+  "dependencies": {
+    "fastclick": "^1.0.6",
+    "jquery": "^2.1.4",
+    "outdated-browser-rework": "^1.0.0"
+  },
+  "devDependencies": {
+    "aliasify": "^1.7.2",
+    "autoprefixer": "^6.0.2",
+    "browser-sync": "^2.9.8",
+    "browserify": "^11.1.0",
+    "browserify-shim": "^3.8.10",
+    "del": "^2.0.2",
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.5.2",
+    "gulp-if": "*",
+    "gulp-imagemin": "^2.2.1",
+    "gulp-jshint": "*",
+    "gulp-minify-css": "^1.0.0",
+    "gulp-mocha": "*",
+    "gulp-notify": "*",
+    "gulp-postcss": "*",
+    "gulp-sass": "^2.0.4",
+    "gulp-sequence": "^0.3.2",
+    "gulp-shell": "^0.4.0",
+    "gulp-sourcemaps": "^1.5.1",
+    "gulp-uglify": "^1.2.0",
+    "gulp-util": "^3.0.4",
+    "jshint": "^2.9.1",
+    "jshint-stylish": "*",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "yargs": "*"
+  },
+  "browserify": {
+    "transform": [
+      "aliasify"
+    ]
+  },
+  "aliasify": {
+    "aliases": {
+      "modules": "./src/js/modules"
+    }
+  },
+  "scripts": {
+    "watch": "gulp",
+    "build": "gulp build",
+    "production": "gulp build --production"
+  }
+}
