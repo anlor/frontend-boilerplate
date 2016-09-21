@@ -1,11 +1,13 @@
-export class TapeMachine{
-    constructor(){
+export class TapeMachine {
+    constructor() {
         this.recordedMessage = '';
     }
-    record(message){
+
+    record(message) {
         this.recordedMessage = message;
     }
-    play(){
+
+    play() {
         console.log(this.recordedMessage);
     }
 }

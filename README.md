@@ -1,4 +1,4 @@
-# Humblebee Boilerplate using Browserify and Babel
+# Boilerplate using Browserify, Gulp and Babel
 
 * * *
 

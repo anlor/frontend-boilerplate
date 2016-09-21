@@ -50,6 +50,7 @@ import browserSync from 'browser-sync';
 // js
 import browserify from 'browserify';
 import babelify from 'babelify';
+import babelResolver from 'babel-resolver';
 import source from 'vinyl-source-stream';
 
 // linting
@@ -160,10 +161,14 @@ const tasks = {
     // JS
     // --------------------------
     js() {
-        return browserify({ entries: paths.scripts.bundler_input, debug: !production})
+        return browserify({ 
+                entries: paths.scripts.bundler_input, 
+                debug: !production
+            })
             .transform('babelify', { 
                 presets: ['es2015'],
-                plugins: ["transform-object-assign"]
+                plugins: ["transform-object-assign"],
+                resolveModuleSource: babelResolver('src/js')
             })
             .bundle()
             .on('error', function(err) {

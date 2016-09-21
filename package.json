@@ -1,18 +1,13 @@
 {
   "name": "boilerplate-gulp-browserify",
   "version": "0.0.1",
-  "description": "Boilerplate using Gulp and Browserify",
-  "dependencies": {
-    "fastclick": "^1.0.6",
-    "jquery": "^2.1.4",
-    "outdated-browser-rework": "^1.0.0"
-  },
+  "description": "Boilerplate using Browserify, Gulp and Babel",
   "devDependencies": {
-    "aliasify": "^1.7.2",
     "autoprefixer": "^6.0.2",
     "babel-core": "^6.14.0",
     "babel-plugin-transform-object-assign": "^6.5.0",
     "babel-preset-es2015": "^6.3.13",
+    "babel-resolver": "^1.1.0",
     "babelify": "^7.3.0",
     "browser-sync": "^2.9.8",
     "browserify": "^13.1.0",
@@ -25,8 +20,6 @@
     "gulp-notify": "*",
     "gulp-postcss": "*",
     "gulp-sass": "^2.0.4",
-    "gulp-sequence": "^0.3.2",
-    "gulp-shell": "^0.4.0",
     "gulp-sourcemaps": "^1.5.1",
     "gulp-uglify": "^1.2.0",
     "gulp-util": "^3.0.4",
@@ -35,16 +28,6 @@
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "yargs": "*"
-  },
-  "browserify": {
-    "transform": [
-      "aliasify"
-    ]
-  },
-  "aliasify": {
-    "aliases": {
-      "modules": "./src/js/modules"
-    }
   },
   "scripts": {
     "watch": "gulp",
