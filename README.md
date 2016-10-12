@@ -2,6 +2,14 @@
 
 * * *
 
+## Install
+
+* Run -> npm install
+* Run -> npm install gulp -g
+* Run -> npm run watch
+
+* * *
+
 ## UPDATES
 
 ### 2016-02-015
