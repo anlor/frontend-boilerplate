@@ -1,21 +1,26 @@
 'use strict';
 
+const srcBase = 'src';
+const buildBase = 'build';
+const cssBase = `${srcBase}/css`;
+const jsBase = `${srcBase}/js`;
+
 const paths = {
-    input: 'src',
-    output: 'build',
+    input: srcBase,
+    output: buildBase,
     css: {
-        main: 'src/css/styles.scss',
-        input: 'src/css/**/*.scss',
-        output: 'build/css',
+        main: `${cssBase}/styles.scss`,
+        input: `${cssBase}/**/*.scss`,
+        output:`${buildBase}/css`,
     },
     js: {
-        main: 'src/js/app.js',
-        input: 'src/js/**/*.js',
-        output: 'build/js'
+        main: `${jsBase}/app.js`,
+        input: `${jsBase}/**/*.js`,
+        output: `${buildBase}/js`
     },
     assets: {
-        input: ['src/*', 'src/**/*', '!src/css/**/*', '!src/js/**/*'],
-        output: 'build'
+        input: [`${srcBase}/*`, `${srcBase}/**/*`, `!${cssBase}/**/*`, `!${jsBase}/**/*`],
+        output: buildBase
     }
 };
 
@@ -158,7 +163,7 @@ const tasks = {
             .transform('babelify', { 
                 presets: ['es2015'],
                 plugins: ["transform-object-assign"],
-                resolveModuleSource: babelResolver('src/js')
+                resolveModuleSource: babelResolver(`${srcBase}/js`)
             })
             .bundle()
             .on('error', function(err) {
