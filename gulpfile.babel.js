@@ -3,26 +3,18 @@
 const paths = {
     input: 'src',
     output: 'build',
-    images: {
-        input: 'src/images/**/*',
-        output: 'build/images'
-    },
-    fonts: {
-        input: 'src/fonts/**/*',
-        output: 'build/fonts'
-    },
-    styles: {
-        main_input: 'src/css/styles.scss',
+    css: {
+        main: 'src/css/styles.scss',
         input: 'src/css/**/*.scss',
         output: 'build/css',
     },
-    scripts: {
-        bundler_input: 'src/js/app.js',
+    js: {
+        main: 'src/js/app.js',
         input: 'src/js/**/*.js',
         output: 'build/js'
     },
-    templates: {
-        input: ['src/*', '!src/css/', '!src/js'],
+    assets: {
+        input: ['src/*', 'src/**/*', '!src/css/**/*', '!src/js/**/*'],
         output: 'build'
     }
 };
@@ -69,6 +61,7 @@ const port = process.env.PORT || 8000;
 // ----------------------------
 // Error notification methods
 // ----------------------------
+
 function beep() {
     var os = require('os');
     var file = 'gulp/error.wav';
@@ -97,34 +90,30 @@ function handleError(task, err) {
 // CUSTOM TASK METHODS
 // --------------------------
 const tasks = {
+
     // --------------------------
     // Delete build folder
     // --------------------------
+
     clean() {
         return del(paths.output);
     },
+
     // --------------------------
-    // Copy static assets
+    // Assets
     // --------------------------
+
     assets() {
-        gulp.src(paths.images.input)
-            .pipe(gulp.dest(paths.images.output))
-        gulp.src(paths.fonts.input)
-            .pipe(gulp.dest(paths.fonts.output))
+        return gulp.src(paths.assets.input)
+            .pipe(gulp.dest(paths.assets.output))
     },
+
     // --------------------------
-    // HTML
+    // CSS (libsass)
     // --------------------------
-    // html templates (when using the connect server)
-    templates() {
-        return gulp.src(paths.templates.input)
-            .pipe(gulp.dest(paths.templates.output))
-    },
-    // --------------------------
-    // SASS (libsass)
-    // --------------------------
-    sass() {
-       return gulp.src(paths.styles.main_input)
+
+    css() {
+       return gulp.src(paths.css.main)
             // sourcemaps + sass + error handling
             .pipe(gulpif(!production, sourcemaps.init()))
             .pipe(sass({
@@ -154,15 +143,16 @@ const tasks = {
             }))
             // write sourcemaps to a specific directory
             // give it a file and save
-            .pipe(gulp.dest(paths.styles.output));
+            .pipe(gulp.dest(paths.css.output));
     },
 
     // --------------------------
-    // JS
+    // JS (babelify)
     // --------------------------
+
     js() {
         return browserify({ 
-                entries: paths.scripts.bundler_input, 
+                entries: paths.js.main, 
                 debug: !production
             })
             .transform('babelify', { 
@@ -178,7 +168,7 @@ const tasks = {
             .pipe(source('build.js'))
             .pipe(gulpif(production, buffer()))
             .pipe(gulpif(production, uglify()))
-            .pipe(gulp.dest(paths.scripts.output));
+            .pipe(gulp.dest(paths.js.output));
     },
 
     // --------------------------
@@ -186,13 +176,13 @@ const tasks = {
     // --------------------------
     lintjs() {
         return gulp.src([
-                paths.scripts.input
-            ])
-            .pipe(jshint())
-            .pipe(jshint.reporter(stylish))
-            .on('error', () => {
-                beep();
-            });
+            paths.js.input
+        ])
+        .pipe(jshint())
+        .pipe(jshint.reporter(stylish))
+        .on('error', () => {
+            beep();
+        });
     },
 };
 
@@ -205,13 +195,13 @@ gulp.task('browser-sync', () => {
     });
 });
 
-gulp.task('reload-sass', ['sass'], () => {
+gulp.task('reload-css', ['css'], () => {
     browserSync.reload();
 });
 gulp.task('reload-js', ['js'], () => {
     browserSync.reload();
 });
-gulp.task('reload-templates', ['templates'], () => {
+gulp.task('reload-assets', ['assets'], () => {
     browserSync.reload();
 });
 
@@ -221,37 +211,35 @@ gulp.task('reload-templates', ['templates'], () => {
 gulp.task('clean', tasks.clean);
 // for production we require the clean method on every individual task
 const req = build ? ['clean'] : [];
+
 // individual tasks
-gulp.task('templates', req, tasks.templates);
 gulp.task('assets', req, tasks.assets);
-gulp.task('sass', req, tasks.sass);
+gulp.task('css', req, tasks.css);
 gulp.task('js', req, tasks.js);
 gulp.task('lint:js', tasks.lintjs);
 
 // --------------------------
 // DEV/WATCH TASK
 // --------------------------
-gulp.task('watch', ['assets', 'templates', 'sass', 'js', 'browser-sync'], () => {
+gulp.task('watch', ['assets', 'css', 'js', 'browser-sync'], () => {
 
     // --------------------------
-    // watch:sass
+    // watch:css
     // --------------------------
-    gulp.watch(paths.styles.input, ['reload-sass']);
+
+    gulp.watch(paths.css.input, ['reload-css']);
 
     // --------------------------
     // watch:js
     // --------------------------
-    gulp.watch(paths.scripts.input, ['lint:js', 'reload-js']);
+
+    gulp.watch(paths.js.input, ['lint:js', 'reload-js']);
 
     // --------------------------
-    // watch:images/fonts
+    // watch:assets
     // --------------------------
-    gulp.watch([paths.images.input, paths.fonts.input], ['assets']);
 
-    // --------------------------
-    // watch:html
-    // --------------------------
-    gulp.watch(paths.templates.input, ['reload-templates']);
+    gulp.watch(paths.assets.input, ['reload-assets']);
 
     gutil.log(gutil.colors.bgGreen('Watching for changes...'));
 });
@@ -259,9 +247,8 @@ gulp.task('watch', ['assets', 'templates', 'sass', 'js', 'browser-sync'], () => 
 // build task
 gulp.task('build', [
     'clean',
-    'templates',
     'assets',
-    'sass',
+    'css',
     'js',
 ]);
 
