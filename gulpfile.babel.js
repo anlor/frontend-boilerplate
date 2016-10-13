@@ -94,6 +94,7 @@ function handleError(task, err) {
 // --------------------------
 // CUSTOM TASK METHODS
 // --------------------------
+
 const tasks = {
 
     // --------------------------
@@ -226,6 +227,7 @@ gulp.task('lint:js', tasks.lintjs);
 // --------------------------
 // DEV/WATCH TASK
 // --------------------------
+
 gulp.task('watch', ['assets', 'css', 'js', 'browser-sync'], () => {
 
     // --------------------------
