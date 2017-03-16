@@ -180,6 +180,7 @@ const tasks = {
     // --------------------------
     // linting
     // --------------------------
+
     lintjs() {
         return gulp.src([
             paths.js.input
@@ -204,9 +205,11 @@ gulp.task('browser-sync', () => {
 gulp.task('reload-css', ['css'], () => {
     browserSync.reload();
 });
+
 gulp.task('reload-js', ['js'], () => {
     browserSync.reload();
 });
+
 gulp.task('reload-assets', ['assets'], () => {
     browserSync.reload();
 });
@@ -214,11 +217,12 @@ gulp.task('reload-assets', ['assets'], () => {
 // --------------------------
 // CUSTOMS TASKS
 // --------------------------
-gulp.task('clean', tasks.clean);
+
 // for production we require the clean method on every individual task
 const req = build ? ['clean'] : [];
 
 // individual tasks
+gulp.task('clean', tasks.clean);
 gulp.task('assets', req, tasks.assets);
 gulp.task('css', req, tasks.css);
 gulp.task('js', req, tasks.js);
