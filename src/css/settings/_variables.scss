@@ -1,0 +1,25 @@
+/* Font faces */
+$base-font-family: 'Helvetica Neue', Helvetica, Arial;
+
+/* Descriptive variables (colors) */
+$white: #ffffff;
+$black: #000000;
+$dark-grey: #333333;
+
+/* Functional variables */
+$text-color: $black;
+
+/* Layout variables */
+$base-gutter: 60px;
+$base-gutter-md: 40px;
+$base-gutter-sm: 30px;
+$base-gutter-xs: 20px;
+
+$grid-cols: 12;
+
+$container-max-width: 1280px;
+
+/* Break Points */
+$bp-md: 1100px;
+$bp-sm: 800px;
+$bp-xs: 480px;
