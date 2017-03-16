@@ -1,7 +1,7 @@
 'use strict';
 
 const srcBase = 'src';
-const buildBase = 'build';
+const buildBase = '';
 const cssBase = `${srcBase}/css`;
 const jsBase = `${srcBase}/js`;
 
@@ -11,15 +11,15 @@ const paths = {
     css: {
         main: `${cssBase}/styles.scss`,
         input: `${cssBase}/**/*.scss`,
-        output:`${buildBase}/css`,
+        output: `css`,
     },
     js: {
         main: `${jsBase}/app.js`,
         input: `${jsBase}/**/*.js`,
-        output: `${buildBase}/js`
+        output: `js`
     },
     assets: {
-        input: [`${srcBase}/*`, `${srcBase}/**/*`, `!${cssBase}/**/*`, `!${jsBase}/**/*`],
+        input: [`${srcBase}/index.html`, `!${cssBase}/**/*`, `!${jsBase}/**/*`],
         output: buildBase
     }
 };
@@ -102,7 +102,7 @@ const tasks = {
     // --------------------------
 
     clean() {
-        return del(paths.output);
+        //return del(paths.output);
     },
 
     // --------------------------
@@ -180,6 +180,7 @@ const tasks = {
     // --------------------------
     // linting
     // --------------------------
+
     lintjs() {
         return gulp.src([
             paths.js.input
@@ -202,23 +203,26 @@ gulp.task('browser-sync', () => {
 });
 
 gulp.task('reload-css', ['css'], () => {
-    browserSync.reload();
+   // browserSync.reload();
 });
+
 gulp.task('reload-js', ['js'], () => {
-    browserSync.reload();
+   // browserSync.reload();
 });
+
 gulp.task('reload-assets', ['assets'], () => {
-    browserSync.reload();
+   // browserSync.reload();
 });
 
 // --------------------------
 // CUSTOMS TASKS
 // --------------------------
-gulp.task('clean', tasks.clean);
+
 // for production we require the clean method on every individual task
 const req = build ? ['clean'] : [];
 
 // individual tasks
+gulp.task('clean', tasks.clean);
 gulp.task('assets', req, tasks.assets);
 gulp.task('css', req, tasks.css);
 gulp.task('js', req, tasks.js);
@@ -228,7 +232,7 @@ gulp.task('lint:js', tasks.lintjs);
 // DEV/WATCH TASK
 // --------------------------
 
-gulp.task('watch', ['assets', 'css', 'js', 'browser-sync'], () => {
+gulp.task('watch', ['assets', 'css', 'js'], () => {
 
     // --------------------------
     // watch:css
