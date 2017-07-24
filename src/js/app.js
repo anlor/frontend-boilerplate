@@ -1,5 +1,9 @@
-import { TapeMachine } from 'modules/helpers';
+import { getMq } from 'modules/helpers';
 
-const tp = new TapeMachine();
-tp.record('Hello... Hellooooo!!! Helloooooo!!!!!');
-tp.play();
+const main = {
+    init() {
+        console.log("init");
+    }
+};
+
+main.init();

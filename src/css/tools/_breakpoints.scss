@@ -12,4 +12,7 @@ BREAKPOINTS
     @else if $point == xsmall {
         @media (max-width: $bp-xs) { @content; }
     }
+    @else {
+        @media (max-width: $point) { @content; }
+    }
 }

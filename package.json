@@ -30,6 +30,13 @@
     "vinyl-source-stream": "^1.1.0",
     "yargs": "*"
   },
+  "dependencies": {
+    "bezier-easing": "^2.0.3",
+    "hammerjs": "^2.0.8",
+    "gsap": "^1.19.1",
+    "handlebars": "^4.0.6",
+    "tween.js": "^16.6.0"
+  },
   "scripts": {
     "watch": "gulp",
     "build": "gulp build",

@@ -1,0 +1,46 @@
+.o-fb-row {
+    display: flex;
+    flex: 0 1 auto;
+    -webkit-box-orient: horizontal;
+    flex-direction: row;
+    flex-wrap: wrap;
+    position: relative;
+}
+
+.o-fb-col {
+    @include horizontal-default-gutter(2);
+
+    @for $i from 1 through $grid-cols {
+        &--#{$i} {
+            flex-basis: (100% / $grid-cols) * $i;
+            max-width: (100% / $grid-cols) * $i;
+        }
+    }
+
+    @include breakpoint(medium) {
+        @for $i from 1 through $grid-cols {
+            &--md-#{$i} {
+                flex-basis: (100% / $grid-cols) * $i;
+                max-width: (100% / $grid-cols) * $i;
+            }
+        }
+    }
+
+    @include breakpoint(small) {
+        @for $i from 1 through $grid-cols {
+            &--sm-#{$i} {
+                flex-basis: (100% / $grid-cols) * $i;
+                max-width: (100% / $grid-cols) * $i;
+            }
+        }
+    }
+
+    @include breakpoint(xsmall) {
+        @for $i from 1 through $grid-cols {
+            &--xs-#{$i} {
+                flex-basis: (100% / $grid-cols) * $i;
+                max-width: (100% / $grid-cols) * $i;
+            }
+        }
+    }
+}
