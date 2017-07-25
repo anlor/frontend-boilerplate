@@ -157,11 +157,11 @@ const tasks = {
     // --------------------------
 
     js() {
-        return browserify({ 
-                entries: paths.js.main, 
+        return browserify({
+                entries: paths.js.main,
                 debug: !production
             })
-            .transform('babelify', { 
+            .transform('babelify', {
                 presets: ['es2015'],
                 plugins: ["transform-object-assign"],
                 resolveModuleSource: babelResolver(`${srcBase}/js`)
