@@ -46,3 +46,13 @@ export function getMq() {
         xsmall: window.matchMedia(`(max-width: ${xsmall}px)`).matches
     };
 }
+
+// Converts from degrees to radians.
+export function radians(degrees) {
+  return degrees * Math.PI / 180;
+};
+
+// Converts from radians to degrees.
+export function degrees(radians) {
+  return radians * 180 / Math.PI;
+};

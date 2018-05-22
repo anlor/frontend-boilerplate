@@ -49,3 +49,8 @@
         padding-bottom: $base-gutter-xs / $divider;
     }
 }
+
+@mixin respSvgProportions($vbw, $vbh, $w) {
+    width: #{$w}px;
+    height: #{$w * ($vbh / $vbw)}px;
+}

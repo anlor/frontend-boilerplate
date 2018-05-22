@@ -1,4 +1,4 @@
-import { getMq } from 'modules/helpers';
+import { getMq } from 'utils/general-utils';
 
 const main = {
     init() {

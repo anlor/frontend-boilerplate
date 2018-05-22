@@ -21,6 +21,10 @@ const paths = {
     assets: {
         input: [`${srcBase}/*`, `${srcBase}/**/*`, `!${cssBase}/**/*`, `!${jsBase}/**/*`],
         output: buildBase
+    },
+    fonts: {
+        input: `${srcBase}/fonts/*.ttf`,
+        output: `${buildBase}/fonts`
     }
 };
 
@@ -53,6 +57,10 @@ import source from 'vinyl-source-stream';
 // linting
 import jshint from 'gulp-jshint';
 import stylish from 'jshint-stylish';
+
+// fonts
+import fontmin from 'fontmin';
+import ttf2woff2 from 'gulp-ttf2woff2';
 
 // gulp build --production
 const production = !!argv.production;
@@ -191,6 +199,28 @@ const tasks = {
             beep();
         });
     },
+
+    fontmin() {
+        const _fontmin = new fontmin()
+            .src(paths.fonts.input)
+            .use(fontmin.glyph({
+                text: ''
+            }))
+            .use(fontmin.ttf2woff({
+                deflate: true           // deflate woff. default = false
+            }))
+            .use(ttf2woff2({clone: true}))
+            .dest(paths.fonts.output);
+
+        _fontmin.run(function (err, files) {
+            if (err) {
+                throw err;
+            }
+
+            console.log(files[0]);
+            // => { contents: <Buffer 00 01 00 ...> }
+        });
+    }
 };
 
 gulp.task('browser-sync', () => {
@@ -227,6 +257,7 @@ gulp.task('assets', req, tasks.assets);
 gulp.task('css', req, tasks.css);
 gulp.task('js', req, tasks.js);
 gulp.task('lint:js', tasks.lintjs);
+gulp.task('fontmin', tasks.fontmin);
 
 // --------------------------
 // DEV/WATCH TASK
@@ -264,6 +295,8 @@ gulp.task('build', [
 ]);
 
 gulp.task('default', ['watch']);
+
+gulp.task('generate-fonts', ['fontmin']);
 
 // gulp (watch) : for development and livereload
 // gulp build : for a one off development build
